@@ -1,0 +1,74 @@
+original: for 4 lead and 1 lead
+class_loss = focal_loss2(pred_prob_logits, label_target, gamma=0, alpha_activator=True)# gamma=0 means focus loss is off
+class_loss = 1*tf.math.reduce_sum(class_loss) / N for 4 lead
+class_loss = 1*tf.math.reduce_sum(class_loss) / N for 1&2 lead
+def focal_loss2(y_pred_logit, y_true_hot, gamma, alpha_activator):
+    if alpha_activator:
+        # alpha_f = tf.constant([1, 3, 4, 3, 0.5, 0.5, 0.9, 0.9, 0.5, 0.5, 0.8, 0.9],dtype=tf.float32)
+        # alpha_f = tf.constant([1, 1, 1, 1, 0.5, 0.5, 0.9, 0.9, 0.5, 0.5, 0.8, 0.9], dtype=tf.float32)
+        # alpha_f = tf.constant([0.8, 3, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1], dtype=tf.float32)
+        alpha_f = tf.constant([1, 1, 1, 1.1, 1, 1, 1, 1, 1, 1, 1, 1], dtype=tf.float32)
+
+
+
+
+
+class darknet53(tf.keras.layers.Layer):
+    def __init__(self, name="darknet53"):
+        super(darknet53, self).__init__(name=name)
+        # self.BN0 = tf.keras.layers.BatchNormalization()
+        # self.layer_1 = DarknetConv1D(32, 3)
+
+        # self.BN = tf.keras.layers.BatchNormalization()
+
+        self.layer_1 = DarknetConv1D_BN_Leaky(32, 3)
+        self.layer_2 = resblock_1(64)########## 1/2
+        self.layer_3 = resblock_2(128)########## 1/4
+        self.layer_4 = resblock_8(256, pad_pattern=(3,2),stride=2)# extract its output 1/8 shold be (1,0)
+
+        self.layer_5 = resblock_8(512, pad_pattern=(1,0),stride=2)# extract its output 1/16
+
+        self.layer_6 = resblock_4(1024, pad_pattern=(1,0),stride=2)# extract its output 1/32
+
+
+    def call(self, inputs):
+        # x = self.BN0(inputs)
+        # z0=x
+        # inputs=self.BN(inputs)
+        # z0 = inputs
+        x = self.layer_1(inputs)
+        # z1=x
+        x = self.layer_2(x)
+        # z2=x
+        x = self.layer_3(x)
+        # z3=x
+        x = self.layer_4(x)
+        # tf.print(x.shape)
+
+        x1 = self.layer_5(x)
+        # tf.print(x1.shape)
+
+        x2 = self.layer_6(x1)
+        # tf.print(x2.shape)
+
+        return x,x1,x2 #route_52,route_26,route_13
+        # return x, x1, x2, z1, z2, z3, z0
+
+
+
+class DarknetConv1D_BN_Leaky(tf.keras.layers.Layer):
+    def __init__(self, *args, name="DarknetConv1D_BN_Leaky", **kwargs):
+        super(DarknetConv1D_BN_Leaky, self).__init__(name=name)
+        self.no_bias_kwargs = {}
+        self.no_bias_kwargs.update(kwargs)
+
+
+        self.layer1 = DarknetConv1D(*args, **self.no_bias_kwargs)
+        self.layer2 = tf.keras.layers.BatchNormalization()
+        self.layer3 = tf.keras.layers.LeakyReLU(alpha=0.1)
+
+    def call(self, inputs):
+        # tf.print(self.no_bias_kwargs)
+        x = self.layer1(inputs)
+        x = self.layer2(x)
+        return self.layer3(x)
