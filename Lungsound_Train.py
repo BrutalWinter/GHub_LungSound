@@ -15,7 +15,7 @@ from Lung_sound_model import LungSound_Model, train_step, predict
 ####################### Training Purpose
 if __name__ == '__main__':
     ####################################
-    Directory = r'/home/brutal/PycharmProjects/Project-lungsound/LUNGSOUND'
+    Directory = r'/home/brutal/PycharmProjects/LUNGSOUND'
     Wave_data_files_path = os.path.join(Directory, 'data_*.DAT')
     Wave_data_files = tf.io.gfile.glob(Wave_data_files_path)
 
@@ -99,16 +99,17 @@ if __name__ == '__main__':
 
             print('spectrograms_batch', spectrograms_batch.shape)
             print('mfccs_batch', mfccs_batch.shape)
-            # plt_spectrogram_batch(spectrograms_batch, id_batch, Label_batch, time_duration=20, sample_rate=8000)
-            # plt_MFCC_batch(mfccs_batch, id_batch, Label_batch, time_duration=20)
+            plt_spectrogram_batch(spectrograms_batch, id_batch, Label_batch, time_duration=20, sample_rate=8000)
+            plt_MFCC_batch(mfccs_batch, id_batch, Label_batch, time_duration=20)
 
             # mfccs_batch = tf.expand_dims(mfccs_batch, axis=-1)
             # loss = train_step(LungSound_model, optimizer, mfccs_batch, Label_batch)
-            spectrograms_batch = tf.expand_dims(spectrograms_batch, axis=-1)
-            loss = train_step(LungSound_model, optimizer, spectrograms_batch, Label_batch)
-            print('The Current Epoch={} and its step={}'.format(epoch,step))
-            print('loss', loss)
-            print('\n<===============================>')
+
+            # spectrograms_batch = tf.expand_dims(spectrograms_batch, axis=-1)
+            # loss = train_step(LungSound_model, optimizer, spectrograms_batch, Label_batch)
+            # print('The Current Epoch={} and its step={}'.format(epoch,step))
+            # print('loss', loss)
+            # print('\n<===============================>')
 
 
         # if (epoch+1) % 4 == 0:
