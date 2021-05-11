@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
 
     ##########################################
-    batch_size = 12
+    batch_size = 1
     Label_Data_dataset =Label_Data_dataset.shuffle(1200, reshuffle_each_iteration=True).batch(batch_size)
     # Label_Data_dataset=Label_Data_dataset.filter(label_all_0_keep).batch(1)
     LungSound_model = LungSound_Model(32, 5)
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
 
     start = 0
-    end = 10
+    end = 5
     for epoch in tf.range(0, 16):
         for step, data in enumerate(Label_Data_dataset):
             if step > end + 1:
@@ -81,8 +81,8 @@ if __name__ == '__main__':
             # print('The {:d}th -- its data is {}, shape={}, dtype={}'.format(step, PCM_batch.shape, PCM_batch.shape,
             #                                                                    PCM_batch.dtype))
             #
-            # # plt_wav_batch(PCM_batch, id_batch, Label_batch, sample_rate=8000)
-            #
+            # plt_wav_batch(PCM_batch, id_batch, Label_batch, sample_rate=8000)
+
             # # plt_spectrum_from_wave_batchs(PCM_batch, id_batch, Label_batch, sample_rate=8000, FFT_len=1024 * 16, overlap=1024 * 16 - 256 * 16)
 
 
@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
             ############################################################
             # ## 呼吸周期大概 2-3s
-            Weight=1 ## MFCCs is 1
+            Weight=10 ## MFCCs is 1
             spectrograms_batch, mfccs_batch = Calculating_MFCCs_from_wave(PCM_batch,
                                                                           sample_rate=8000, window_frame_len=1024 * Weight,
                                                                           frame_step=256 * Weight, fft_length=1024 * 1,
@@ -99,6 +99,7 @@ if __name__ == '__main__':
 
             print('spectrograms_batch', spectrograms_batch.shape)
             print('mfccs_batch', mfccs_batch.shape)
+
             plt_spectrogram_batch(spectrograms_batch, id_batch, Label_batch, time_duration=20, sample_rate=8000)
             plt_MFCC_batch(mfccs_batch, id_batch, Label_batch, time_duration=20)
 
@@ -107,17 +108,18 @@ if __name__ == '__main__':
 
             # spectrograms_batch = tf.expand_dims(spectrograms_batch, axis=-1)
             # loss = train_step(LungSound_model, optimizer, spectrograms_batch, Label_batch)
-            # print('The Current Epoch={} and its step={}'.format(epoch,step))
-            # print('loss', loss)
-            # print('\n<===============================>')
 
-
-        # if (epoch+1) % 4 == 0:
-        #     print('==========>  Saving epoch end model  <==========')
-        #     model_save_path = os.path.join(modelsave_directory,'LungModel_epoch_Spec_75percent{}'.format(epoch)) #_6layersoff
-        #     tf.keras.models.save_model(LungSound_model, filepath=model_save_path)
-
-    print('done')
+    #         print('The Current Epoch={} and its step={}'.format(epoch,step))
+    #         print('loss', loss)
+    #         print('\n<===============================>')
+    #
+    #
+    #     if (epoch+1) % 4 == 0:
+    #         print('==========>  Saving epoch end model  <==========')
+    #         model_save_path = os.path.join(modelsave_directory,'LungModel_epoch_Spec_75percent{}'.format(epoch)) #_6layersoff
+    #         tf.keras.models.save_model(LungSound_model, filepath=model_save_path)
+    #
+    # print('done')
 
 
 
@@ -127,7 +129,7 @@ if __name__ == '__main__':
 # ######################## Predict Purpose
 # if __name__ == '__main__':
 #     ####################################
-#     Directory = r'/home/brutal/PycharmProjects/Data_base/LUNGSOUND'
+#     Directory = r'/home/brutal/PycharmProjects/LUNGSOUND'
 #     Wave_data_files_path = os.path.join(Directory, 'data_*.DAT')
 #     Wave_data_files = tf.io.gfile.glob(Wave_data_files_path)
 #
@@ -166,15 +168,16 @@ if __name__ == '__main__':
 #     ##########################################
 #     batch_size = 8
 #     Label_Data_dataset = Label_Data_dataset.batch(batch_size)
-#     modelload_directory = r"/home/brutal/PycharmProjects/Project-lungsound/Model_Save"
+#     modelload_directory = r"/home/brutal/PycharmProjects/GHub_LungSound/Model_Save"
 #
-#     checkpoint_path_traning_pre = os.path.join(modelload_directory, 'LungModel_epoch_75percent15')
+#     checkpoint_path_traning_pre = os.path.join(modelload_directory, 'LungModel_epoch_75percent11')
 #     LungSound_model = tf.keras.models.load_model(filepath=checkpoint_path_traning_pre,compile=False)
 #
 #
-#     modelsave_directory= r"/home/brutal/PycharmProjects/Project-lungsound/Model_Save"
+#     modelsave_directory= r"/home/brutal/PycharmProjects/GHub_LungSound/Model_Save"
 #
 #     C_Matrix = tf.zeros([2, 2], dtype=tf.int32)
+#
 #     end = 10
 #     for step, data in enumerate(Label_Data_dataset):
 #         # if step > end + 1:
@@ -211,6 +214,7 @@ if __name__ == '__main__':
 #
 #         label_predict_prob = predict(LungSound_model, mfccs_batch)
 #         label_predict=tf.math.argmax(label_predict_prob,axis=-1, output_type=tf.int32)
+#
 #
 #         ############################################################
 #         labels=tf.reshape(Label_batch,[-1])

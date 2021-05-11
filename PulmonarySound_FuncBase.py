@@ -42,6 +42,8 @@ def plt_spectrum_from_wave_batchs(wave_data, id, Label_batch, sample_rate, FFT_l
         print('ts.shape', ts.shape)
     plt.show()
 
+
+
 def plot_FilterBanks(Filterbanks):
     fig = plt.figure(figsize=(16, 8))
     ax1 = fig.add_subplot(1, 1, 1)
@@ -50,6 +52,7 @@ def plot_FilterBanks(Filterbanks):
     # for i in np.arange(0, Filterbanks.shape[-1]):
     #     ax1.plot(x_data, Filterbanks[0:,i], 'k')
     plt.show()
+
 
 
 def plt_MFCC_batch(mfccs_batch, id, Label_batch, time_duration):
