@@ -1,3 +1,5 @@
+All BN layers must be on
+
 original: for 4 lead and 1 lead
 class_loss = focal_loss2(pred_prob_logits, label_target, gamma=0, alpha_activator=True)# gamma=0 means focus loss is off
 class_loss = 1*tf.math.reduce_sum(class_loss) / N for 4 lead
