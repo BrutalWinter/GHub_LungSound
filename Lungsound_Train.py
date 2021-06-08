@@ -209,6 +209,7 @@ if __name__ == '__main__':
         # print('spectrograms_batch', spectrograms_batch.shape)
         print('mfccs_batch', mfccs_batch.shape)
 
+
         label_predict_prob = predict(LungSound_model, mfccs_batch)
         label_predict=tf.math.argmax(label_predict_prob,axis=-1, output_type=tf.int32)
 
