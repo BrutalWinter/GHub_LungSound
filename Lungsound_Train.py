@@ -129,7 +129,7 @@ from Lung_sound_model import LungSound_Model, train_step, predict
 ######################## Predict Purpose
 if __name__ == '__main__':
     ####################################
-    Directory = r'/home/brutal/PycharmProjects/LUNGSOUND'
+    Directory = r'/home/brutal/PycharmProjects/LUNGSOUND_data'
     Wave_data_files_path = os.path.join(Directory, 'data_*.DAT')
     Wave_data_files = tf.io.gfile.glob(Wave_data_files_path)
 
@@ -159,7 +159,7 @@ if __name__ == '__main__':
 
 
     Label_Data_dataset = tf.data.Dataset.zip((Labels_dataset_parsed, Dataset_parsed))
-    Label_Data_dataset = Label_Data_dataset.shuffle(1600,seed=8).skip(1200)
+    # Label_Data_dataset = Label_Data_dataset.shuffle(1600,seed=8).skip(1200)
 
 
 
@@ -170,11 +170,8 @@ if __name__ == '__main__':
     Label_Data_dataset = Label_Data_dataset.batch(batch_size)
     modelload_directory = r"/home/brutal/PycharmProjects/GHub_LungSound/Model_Save"
 
-    checkpoint_path_traning_pre = os.path.join(modelload_directory, 'LungModel_epoch_75percent11')
+    checkpoint_path_traning_pre = os.path.join(modelload_directory, 'LungModel_epoch11')
     LungSound_model = tf.keras.models.load_model(filepath=checkpoint_path_traning_pre,compile=False)
-
-
-    modelsave_directory= r"/home/brutal/PycharmProjects/GHub_LungSound/Model_Save"
 
     C_Matrix = tf.zeros([2, 2], dtype=tf.int32)
 
@@ -234,8 +231,8 @@ if __name__ == '__main__':
     C_Matrix_diagonal = tf.linalg.diag_part(C_Matrix)
 
 
-    # sum_row_all=tf.constant([916, 686],dtype=tf.int32)
-    sum_row_all = tf.constant([232,170], dtype=tf.int32)
+    sum_row_all=tf.constant([916, 686],dtype=tf.int32)
+    # sum_row_all = tf.constant([232,170], dtype=tf.int32)
     Recall_diagonal=100 * C_Matrix_diagonal / sum_row_all
     Precision_diagonal = 100 * C_Matrix_diagonal / sum_column
     f1_score = Precision_diagonal * Recall_diagonal * 2 / (Recall_diagonal + Precision_diagonal)
